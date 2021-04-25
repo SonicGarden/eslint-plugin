@@ -7,7 +7,7 @@ module.exports = {
     es6: true,
     node: true,
   },
-  extends: ['plugin:eslint-plugin/all', './lib/configs/recommended'],
+  extends: ['plugin:eslint-plugin/all', './lib/configs/recommended', './lib/configs/prettier'],
   plugins: ['eslint-plugin', 'prettier'],
   rules: {
     'eslint-plugin/prefer-placeholders': 'off',
