@@ -1,6 +1,6 @@
 {
   "name": "@sonicgarden/eslint-plugin",
-  "version": "0.3.6",
+  "version": "0.4.0",
   "main": "lib/index.js",
   "author": "aki77",
   "license": "MIT",
@@ -10,22 +10,22 @@
   },
   "devDependencies": {
     "@sonicgarden/prettier-config": "^0.0.1",
-    "eslint": "^7.30.0",
+    "eslint": "^8.2.0",
     "eslint-plugin-eslint-plugin": "^4.0.1"
   },
   "dependencies": {
-    "@typescript-eslint/eslint-plugin": "^4.22.0",
-    "@typescript-eslint/parser": "^4.22.0",
+    "@typescript-eslint/eslint-plugin": "^5.3.1",
+    "@typescript-eslint/parser": "^5.3.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-eslint-comments": "^3.2.0",
-    "eslint-plugin-github": "4.3.2",
+    "eslint-plugin-github": "4.3.4",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.23.2",
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-unicorn": "^38.0.1",
-    "eslint-plugin-unused-imports": "^1.1.4",
+    "eslint-plugin-unused-imports": "^2.0.0",
     "eslint-plugin-vue": "^8.0.3",
     "prettier": "^2.2.1"
   }
