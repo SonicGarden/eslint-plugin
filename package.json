@@ -1,12 +1,12 @@
 {
   "name": "@sonicgarden/eslint-plugin",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "main": "lib/index.js",
   "author": "aki77",
   "license": "MIT",
   "prettier": "@sonicgarden/prettier-config",
   "peerDependencies": {
-    "eslint": "^7.30.0"
+    "eslint": "^8.2.0"
   },
   "devDependencies": {
     "@sonicgarden/prettier-config": "^0.0.1",
