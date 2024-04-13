@@ -6,26 +6,26 @@
   "license": "MIT",
   "prettier": "@sonicgarden/prettier-config",
   "peerDependencies": {
-    "eslint": "^8.2.0"
+    "eslint": "^9.8.0"
   },
   "devDependencies": {
     "@sonicgarden/prettier-config": "^0.0.1",
-    "eslint": "^8.2.0",
-    "eslint-plugin-eslint-plugin": "^5.0.1"
+    "eslint": "^9.8.0",
+    "eslint-plugin-eslint-plugin": "^6.0.0"
   },
   "dependencies": {
-    "@typescript-eslint/eslint-plugin": "^7.6.0",
-    "@typescript-eslint/parser": "^7.6.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-eslint-comments": "^3.2.0",
-    "eslint-plugin-github": "^4.3.5",
+    "eslint-plugin-github": "^5.0.0-2",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-react": "^7.23.2",
-    "eslint-plugin-react-hooks": "^4.2.0",
-    "eslint-plugin-unicorn": "^52.0.0",
-    "eslint-plugin-unused-imports": "^3.1.0",
+    "eslint-plugin-react-hooks": "^5.1.0-rc-2d16326d-20240930",
+    "eslint-plugin-unicorn": "^56.0.1",
+    "eslint-plugin-unused-imports": "^4.0.1",
     "eslint-plugin-vue": "^9.0.1",
     "prettier": "^3.0.0"
   }
