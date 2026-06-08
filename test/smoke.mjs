@@ -9,6 +9,9 @@ const require = createRequire(import.meta.url)
 const sg = require('../lib/index.js')
 const configs = sg.getFlatConfigs()
 
+// tsconfig.json を持つ fixtures ディレクトリ。実ファイルを lint する際の cwd に使う。
+const fixturesDir = fileURLToPath(new URL('./fixtures', import.meta.url))
+
 let failures = 0
 const run = async (name, fn) => {
   try {
@@ -31,6 +34,20 @@ const lintText = async (overrideConfig, code, filePath) => {
 }
 
 const ruleIds = (messages) => messages.map((m) => m.ruleId)
+
+// fixtures に一時ファイル群({ name, content })を書き、先頭ファイルを overrideConfig で lint して
+// messages を返す。resolver は実ファイルパス基準で解決するため lintText ではなく lintFiles を使う。
+const lintFixtureFiles = async (overrideConfig, files) => {
+  const paths = files.map((f) => path.join(fixturesDir, f.name))
+  for (const [i, f] of files.entries()) writeFileSync(paths[i], f.content)
+  try {
+    const eslint = new ESLint({ cwd: fixturesDir, overrideConfigFile: true, overrideConfig })
+    const results = await eslint.lintFiles([paths[0]])
+    return results[0].messages
+  } finally {
+    for (const p of paths) rmSync(p, { force: true })
+  }
+}
 
 await run('全 config が配列としてロードできる', () => {
   for (const [name, cfg] of Object.entries(configs)) {
@@ -86,7 +103,6 @@ await run('react-typescript: react/self-closing-comp を検出', async () => {
 await run('vue-typescript: vue/component-name-in-template-casing を検出', async () => {
   // 型情報ルール(strict-boolean-expressions)は projectService により tsconfig を要するため、
   // fixtures ディレクトリ(tsconfig.json あり)を cwd として実ファイルを lint する
-  const fixturesDir = fileURLToPath(new URL('./fixtures', import.meta.url))
   const vuePath = path.join(fixturesDir, 'Sample.vue')
   const code = `<template>\n  <my-component />\n</template>\n<script setup lang="ts">\nimport MyComponent from './MyComponent.vue'\n</script>\n`
   writeFileSync(vuePath, code)
@@ -119,6 +135,50 @@ await run('browser: github ルールがロードできる', async () => {
   const messages = await lintText(configs.browser, code, 'sample.js')
   // ロード時にクラッシュしないことを確認
   assert(Array.isArray(messages))
+})
+
+// messages から resolver 起因のエラーだけ抽出するヘルパ
+const resolveErrorMessages = (messages) =>
+  messages.filter(
+    (m) =>
+      typeof m.message === 'string' &&
+      (m.message.includes('Resolve error') || m.message.includes('invalid interface loaded as resolver')),
+  )
+
+const assertNoResolveErrors = (messages) => {
+  const resolveErrors = resolveErrorMessages(messages)
+  assert.strictEqual(
+    resolveErrors.length,
+    0,
+    `resolver エラーが出てはいけない: ${resolveErrors.map((m) => `${m.ruleId}: ${m.message}`).join(' | ')}`,
+  )
+}
+
+await run('typescript: resolver が解決でき Resolve error が出ない', async () => {
+  // 先頭ファイルが相対 named import を持ち、resolver 経路を確実に通す。
+  const messages = await lintFixtureFiles(
+    [...configs.recommended, ...configs.typescript],
+    [
+      { name: 'entry.ts', content: `import { value } from './dep'\nconsole.log(value)\n` },
+      { name: 'dep.ts', content: `export const value = 1\n` },
+    ],
+  )
+  assertNoResolveErrors(messages)
+})
+
+await run('vue-typescript: 合成構成で resolver が解決でき Resolve error が出ない', async () => {
+  // 実プロジェクトと同じ合成構成(recommended + typescript + vue-typescript)で .vue の相対 import を解決させる。
+  const messages = await lintFixtureFiles(
+    [...configs.recommended, ...configs.typescript, ...configs['vue-typescript']],
+    [
+      {
+        name: 'Sample.vue',
+        content: `<template>\n  <MyComponent />\n</template>\n<script setup lang="ts">\nimport MyComponent from './MyComponent.vue'\n</script>\n`,
+      },
+      { name: 'MyComponent.vue', content: `<template><div /></template>\n<script setup lang="ts"></script>\n` },
+    ],
+  )
+  assertNoResolveErrors(messages)
 })
 
 if (failures > 0) {
